@@ -26,13 +26,23 @@ public class WebSecurityUtil extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.csrf().disable().authorizeRequests().antMatchers(HttpMethod.POST, "/users").permitAll()
-				.anyRequest().authenticated().and().addFilter(new UserAuthenticationFilter(authenticationManager()));
+				.anyRequest().authenticated().and().addFilter(authenticatiionFilter());
 	}
 
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
 
+	}
+	
+	
+		
+	public UserAuthenticationFilter authenticatiionFilter() throws Exception {
+		
+		UserAuthenticationFilter userAuthenticationFilter	=new UserAuthenticationFilter(authenticationManager());
+		userAuthenticationFilter.setFilterProcessesUrl("/users/login");
+
+		return userAuthenticationFilter;
 	}
 
 }
